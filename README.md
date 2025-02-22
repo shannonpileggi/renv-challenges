@@ -8,6 +8,24 @@
 
 ![](img/renv_choice_1.jpg)
 
+# Timeline
+
+* Oct 2019, v0.8.0 first released to CRAN 
+
+* Jul 2022, E. David Aja at posit::conf [You should use renv](https://www.youtube.com/watch?v=GwVx_pf2uz4)
+
+* Jul 2023, v1.0.0 released <https://github.com/rstudio/renv/releases/tag/v1.0.0>
+
+  + May 2023 lots of documentation updates <https://github.com/rstudio/renv/pull/1236>
+  
+* Preceded by {packrat}
+
+  + Sep 2014 {packrat} 0.4.1 released to CRAN
+  
+  + Sep 2023 {packrat} 0.9.2 released (last release)
+  
+  + {packrat} has been soft-deprecated and is now superseded by {renv}.
+
 
 #  What does {renv} DO and NOT DO
 
@@ -16,56 +34,32 @@ It doesn't.
 
 <https://rstats.wtf/personal-radmin#the-project-onion-r>
 
+<https://rstudio.github.io/renv/articles/renv.html#caveats>
+
+# We'll probably need to talk about...
+
+## Binaries
+
+* https://r-pkgs.org/structure.html
+
+* https://r-pkgs.org/structure.html#fig-package-files
+
+* https://rstats.wtf/installing-packages
+
+## Libraries
+
+```
+.libPaths()
+installed.packages() |> as.data.frame() |> View()
+```
+
+## Global cache
+
+* https://rstudio.github.io/renv/articles/package-install.html#cache
 
 
-# First notes
 
-1. What version of {renv} is the project on?
-
-2. What package repository is the project configured to use?
-
-3. How does your system version of R align with what is recorded in the `renv.lock`?
-
-
-## Upgrade {renv}
-
-* For more recent versions of {renv}, try `renv::upgrade()`.
-
-  + `renv::upgrade()` updates the version of `renv` used for this project
-  
-  + has an additional benefit of simultaneously updating `renv.lock`
-
-* Some older versions of `renv` do not successfully implement `renv::upgrade()`.
-If `renv::upgrade()` fails, try
-
-  + Use `renv::deactivate()` to temporarily de-activate {renv}.
-  
-  + Use `install.packages("renv")` to install the latest version of {renv}.
-  
-  + Use `renv::activate()` to re-activate your project with the newest version of {renv}.
-  
-  + Use `renv::record("renv")` (or similar) to update {renv} in the lockfile.
-  
-## Change the package repository
-
-https://www.pipinghotdata.com/posts/2024-09-16-ease-renvrestore-by-updating-your-repositories-to-p3m/
-
-## Assess R version
-
-⚠️ Proceed with caution
-
-* R upgrades should be OK
-
-  + System is on R 4.4, but R 4.3 recorded in `renv.lock`
-
-* R downgrades might not be
-
-  + System is on R 4.3, but R 4.4 recorded in `renv.lock`
-
-* Use rig to manage your R installation <https://github.com/r-lib/rig>
-
-
-# Package decisions
+# Decisions
 
 https://rstudio.github.io/renv/articles/faq.html#im-returning-to-an-older-renv-project--what-do-i-do
 
@@ -77,15 +71,44 @@ https://rstudio.github.io/renv/articles/faq.html#im-returning-to-an-older-renv-p
 
 * `renv::update()`; confirm everything works; `renv::snapshot()`
 
+  + _Note:_ `renv::update()` updates packages that already exist in your project library.
+  If your project library has not been populated, then do `renv::install()` to install
+  the latest versions of all packages recorded in the lockfile.
+
 3. Something in between
 
 * `renv::restore()`; `renv::install()` specific packages; `renv::snapshot()`
+
+# First notes
+
+1. What version of {renv} is the project on?
+
+2. What package repository is the project configured to use?
+
+3. How does your system version of R align with what is recorded in the `renv.lock`?
 
 
 # Example project
 
 <https://github.com/edavidaja/todo-backend-plumber>
 
+
+
+1. Clone repo
+
+`usethis::create_from_github("https://github.com/edavidaja/todo-backend-plumber")`
+
+```
+# Bootstrapping renv 0.14.0 --------------------------------------------------
+* Downloading renv 0.14.0 ... OK
+* Installing renv 0.14.0 ... Done!
+* Successfully installed and loaded renv 0.14.0.
+* Project 'C:/Users/pileggis/Documents/gh-personal/todo-backend-plumber' loaded. [renv 0.14.0]
+Warning message:
+Project requested R version '4.1.1' but '4.4.2' is currently being used 
+* The project library is out of sync with the lockfile.
+* Use `renv::restore()` to install packages recorded in the lockfile.
+```
 In `renv.lock`
 
 ```
@@ -109,24 +132,35 @@ In `renv.lock`
   ...
 ```
 
-1. Clone repo
+## Assess R version
 
-`usethis::create_from_github("https://github.com/edavidaja/todo-backend-plumber")`
+* Decide: frozen or updated project?
 
-```
-# Bootstrapping renv 0.14.0 --------------------------------------------------
-* Downloading renv 0.14.0 ... OK
-* Installing renv 0.14.0 ... Done!
-* Successfully installed and loaded renv 0.14.0.
-* Project 'C:/Users/pileggis/Documents/gh-personal/todo-backend-plumber' loaded. [renv 0.14.0]
-Warning message:
-Project requested R version '4.1.1' but '4.4.2' is currently being used 
-* The project library is out of sync with the lockfile.
-* Use `renv::restore()` to install packages recorded in the lockfile.
-```
+* Use `rig` to manage R version <https://github.com/r-lib/rig>
 
-1. Upgrade {renv}
+* Live in the happy place, where you align your system R version with what you aim to have in the lockfile.
 
+* Otherwise, ☠️ there be dragons ☠️.
+
+## Upgrade {renv} to most recent version
+
+* For more recent versions of {renv}, try `renv::upgrade()`.
+
+  + `renv::upgrade()` updates the version of `renv` used for this project
+  
+  + has an additional benefit of simultaneously updating `renv.lock`
+
+* Some older versions of `renv` do not successfully implement `renv::upgrade()`.
+If `renv::upgrade()` fails, try
+
+  + Use `renv::deactivate()` to temporarily de-activate {renv}.
+  
+  + Use `install.packages("renv")` to install the latest version of {renv}.
+  
+  + Use `renv::activate()` to re-activate your project with the newest version of {renv}.
+  
+  + Use `renv::record("renv")` (or similar) to update {renv} in the lockfile.
+  
 ```
 renv::deactivate()
 install.packages("renv")
@@ -134,20 +168,36 @@ renv::activate()
 renv::record("renv@1.1.1")
 ```
 
-2. Update package repository
+  
+## Change the package repository
 
-_Note:_ Doesn't help as a standalone action.
+* Especially helpful for "frozen" projects to install package binaries (rather than packages from source)
 
-```
-renv::lockfile_modify(repos = c(
-  P3M = "https://packagemanager.posit.co/cran/latest"
-  )) |> 
-  renv::lockfile_write()
-```
+* https://www.pipinghotdata.com/posts/2024-09-16-ease-renvrestore-by-updating-your-repositories-to-p3m/
 
-3a. Attempt restoration of packages from `renv.lock`
+* https://packagemanager.posit.co/client/#/
 
-`renv::restore()
++ Use `SETUP` interface
+
++ `renv::restore(repos = c(CRAN = "https://p3m.dev/cran/latest"))`
+
++ `renv::restore(repos = c(CRAN = "https://packagemanager.posit.co/cran/2021-11-01"))`
+
+# Update packages
+
+<https://rstudio.github.io/renv/articles/renv.html#updating-packages>
+
+
+
+
+
+## Example botched restore attempt
+
+R in `renv.lock` is 4.1.1, R on system is 4.4.2. Attempt restoration of 
+previous package versions (no repo specification).
+
+
+`renv::restore()`
 
 ```
 Successfully downloaded 19 packages in 25 seconds.
@@ -184,10 +234,7 @@ Issues:
 
 * Then we hit an installation error for `httpuv`due to requirements for compiling from source.
 
-3b.  Attempt update of packages from `renv.lock`
-
-<https://rstudio.github.io/renv/articles/renv.html#updating-packages>
-
+## Example botched package update attempt
 
 ```
 > renv::update()
@@ -217,70 +264,15 @@ installed.packages() |> as.data.frame() |> View()
 Only updated base or recommended packages...
 because {renv} only updates packages that are already installed.
 
-```
-> renv::update("glue")
-The following package(s) are not currently installed:
-- glue
-The latest available versions of these packages will be installed instead.
-
-Do you want to proceed? [Y/n]: Y
-
-- Checking for updated packages ... Done!
-- All packages appear to be up-to-date.
-> packageVersion("glue")
-Error in packageVersion("glue") : there is no package called ‘glue’
-```
-
-Must actually install {glue}, cannot just update.
-
-```
-> renv::install("glue")
-The following package(s) will be installed:
-- glue [1.8.0]
-These packages will be installed into "C:/Users/pileggis/Documents/gh-personal/todo-backend-plumber/renv/library/windows/R-4.4/x86_64-w64-mingw32".
-
-Do you want to proceed? [Y/n]: Y
-
-# Installing packages --------------------------------------------------------
-- Installing glue ...                           OK [linked from cache]
-Successfully installed 1 package in 24 milliseconds.
-
-Restarting R session...
-
-ℹ Using R 4.4.2 (lockfile was generated with R 4.1.1)
-- Project 'C:/Users/pileggis/Documents/gh-personal/todo-backend-plumber' loaded. [renv 1.1.1]
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-> packageVersion("glue")
-[1] ‘1.8.0’
-```
-
-
 <https://bsky.app/profile/did:plc:2zcfjzyocp6kapg6jc4eacok/post/3lgbgrg66hs2i>
 
+# Side note
+
+You can read information from the lock file
+
 ```
-pkgs <- renv::lockfile_read("renv.lock")
-install.packages(names(pkgs$Packages))
-
-....
-Successfully installed 25 packages in 3.2 seconds.
-
-
-renv::record()
+lockfile <- renv::lockfile_read("renv.lock")
+names(lockfile$Packages)
 ```
 
-# Timeline
 
-* Oct 2019, v0.8.0 first released to CRAN 
-
-* Jul 2023, v1.0.0 released <https://github.com/rstudio/renv/releases/tag/v1.0.0>
-
-  + May 2023 lots of documentation updates <https://github.com/rstudio/renv/pull/1236>
-  
-* Preceded by {packrat}
-
-  + Sep 2014 {packrat} 0.4.1 released to CRAN
-  
-  + Sep 2023 {packrat} 0.9.2 released (last release)
-  
-  + {packrat} has been soft-deprecated and is now superseded by {renv}.
