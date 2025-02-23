@@ -284,6 +284,22 @@ installed.packages() |> as.data.frame() |> View()
 Only updated base or recommended packages...
 because {renv} only updates packages that are already installed.
 
+# Implicit vs explicit dependencies
+
+* Default mode is implicit
+
++ `renv::dependencies()` parsed all `.R`, `.Rmd`, `.qmd` and `DESCRIPTION` files for packages used
+
++ can lead to slow project start up or restart up if many files to scan
+
+* Can change to explicit 
+
++ <https://rstudio.github.io/renv/articles/faq.html?q=explicit#capturing-explicit-dependencies>
+
++ `renv::settings$snapshot.type("explicit")`
+
++ Only considers dependencies captured in `DESCRIPTION` file (no file parsing)
+
 
 # Side note
 
