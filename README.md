@@ -29,12 +29,12 @@
 
 #  What does {renv} DO and NOT DO
 
-People wish {renv} solved problems two layers up in the onion.
-It doesn't.
-
-<https://rstats.wtf/personal-radmin#the-project-onion-r>
 
 <https://rstudio.github.io/renv/articles/renv.html#caveats>
+
+
+People wish {renv} solved problems two layers up in the onion.
+It doesn't. <https://rstats.wtf/personal-radmin#the-project-onion-r>
 
 # We'll probably need to talk about...
 
@@ -178,7 +178,7 @@ renv::record("renv@1.1.1")
   
 ## Update packages & change the package repository
 
-& <https://rstudio.github.io/renv/articles/renv.html#updating-packages>
+* <https://rstudio.github.io/renv/articles/renv.html#updating-packages>
 
 * Especially helpful to change repository for "frozen" projects to install package binaries (rather than packages from source)
 
@@ -186,27 +186,27 @@ renv::record("renv@1.1.1")
 
 * https://packagemanager.posit.co/client/#/
 
-+ Use `SETUP` interface
+  + Use `SETUP` interface
 
 _Work in progress, may not be 100% correct_
 
 * Install versions specified in lockfile, from lockfile specified repository
 
-+ `renv::restore()`
+  + `renv::restore()`
 
 * Install versions specified in lockfile, but specify repository
 
-+ `renv::restore(repos = c(CRAN = "https://p3m.dev/cran/latest"))`
+  + `renv::restore(repos = c(CRAN = "https://p3m.dev/cran/latest"))`
 
 * Install versions available on CRAN at specified date (respects repo from lockfile unless otherwise specified)
 
-+ `renv::restore(repos = c(CRAN = "https://packagemanager.posit.co/cran/2021-11-01"))`
+  + `renv::restore(repos = c(CRAN = "https://packagemanager.posit.co/cran/2021-11-01"))`
 
 * Install latest available package versions
 
-+ `renv::update()` (default works on packages already installed in your project library, from CRAN or GitHub only)
+  + `renv::update()` (default works on packages already installed in your project library, from CRAN or GitHub only)
  
-+ `renv::install()` (default works on all packages specified in lockfile)
+  + `renv::install()` (default works on all packages specified in lockfile)
 
 
 * `renv::checkout()`??
@@ -288,17 +288,17 @@ because {renv} only updates packages that are already installed.
 
 * Default mode is implicit
 
-+ `renv::dependencies()` parsed all `.R`, `.Rmd`, `.qmd` and `DESCRIPTION` files for packages used
+  + `renv::dependencies()` parsed all `.R`, `.Rmd`, `.qmd` and `DESCRIPTION` files for packages used
 
-+ can lead to slow project start up or restart up if many files to scan
+  + can lead to slow project start up or restart up if many files to scan
 
 * Can change to explicit 
 
-+ <https://rstudio.github.io/renv/articles/faq.html?q=explicit#capturing-explicit-dependencies>
+  + <https://rstudio.github.io/renv/articles/faq.html?q=explicit#capturing-explicit-dependencies>
 
-+ `renv::settings$snapshot.type("explicit")`
+  + `renv::settings$snapshot.type("explicit")`
 
-+ Only considers dependencies captured in `DESCRIPTION` file (no file parsing)
+  + Only considers dependencies captured in `DESCRIPTION` file (no file parsing)
 
 
 # Side note
