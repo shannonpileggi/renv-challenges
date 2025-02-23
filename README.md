@@ -138,19 +138,26 @@ In `renv.lock`
 
 * Use `rig` to manage R version <https://github.com/r-lib/rig>
 
+```
+rig
+rig list
+rig default 4.1.1
+rig default 4.4.2
+```
+
 * Live in the happy place, where you align your system R version with what you aim to have in the lockfile.
 
 * Otherwise, ☠️ there be dragons ☠️.
 
 ## Upgrade {renv} to most recent version
 
-* For more recent versions of {renv}, try `renv::upgrade()`.
+* For versions of {renv} >= 1.0.1, try `renv::upgrade()`.
 
   + `renv::upgrade()` updates the version of `renv` used for this project
   
   + has an additional benefit of simultaneously updating `renv.lock`
 
-* Some older versions of `renv` do not successfully implement `renv::upgrade()`.
+* Older versions of `renv` do not successfully implement `renv::upgrade()`.
 If `renv::upgrade()` fails, try
 
   + Use `renv::deactivate()` to temporarily de-activate {renv}.
@@ -169,9 +176,11 @@ renv::record("renv@1.1.1")
 ```
 
   
-## Change the package repository
+## Update packages & change the package repository
 
-* Especially helpful for "frozen" projects to install package binaries (rather than packages from source)
+& <https://rstudio.github.io/renv/articles/renv.html#updating-packages>
+
+* Especially helpful to change repository for "frozen" projects to install package binaries (rather than packages from source)
 
 * https://www.pipinghotdata.com/posts/2024-09-16-ease-renvrestore-by-updating-your-repositories-to-p3m/
 
@@ -179,17 +188,28 @@ renv::record("renv@1.1.1")
 
 + Use `SETUP` interface
 
+_Work in progress, may not be 100% correct_
+
+* Install versions specified in lockfile, from lockfile specified repository
+
++ `renv::restore()`
+
+* Install versions specified in lockfile, but specify repository
+
 + `renv::restore(repos = c(CRAN = "https://p3m.dev/cran/latest"))`
+
+* Install versions available on CRAN at specified date (respects repo from lockfile unless otherwise specified)
 
 + `renv::restore(repos = c(CRAN = "https://packagemanager.posit.co/cran/2021-11-01"))`
 
-# Update packages
+* Install latest available package versions
 
-<https://rstudio.github.io/renv/articles/renv.html#updating-packages>
++ `renv::update()` (default works on packages already installed in your project library, from CRAN or GitHub only)
+ 
++ `renv::install()` (default works on all packages specified in lockfile)
 
 
-
-
+* `renv::checkout()`??
 
 ## Example botched restore attempt
 
@@ -264,7 +284,6 @@ installed.packages() |> as.data.frame() |> View()
 Only updated base or recommended packages...
 because {renv} only updates packages that are already installed.
 
-<https://bsky.app/profile/did:plc:2zcfjzyocp6kapg6jc4eacok/post/3lgbgrg66hs2i>
 
 # Side note
 
