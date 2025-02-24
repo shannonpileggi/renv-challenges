@@ -10,6 +10,14 @@
 
 # Timeline
 
+* Preceded by {packrat}
+
+  + Sep 2014 {packrat} 0.4.1 released to CRAN
+  
+  + Sep 2023 {packrat} 0.9.2 released (last release)
+  
+  + {packrat} has been soft-deprecated and is now superseded by {renv}.
+
 * Oct 2019, v0.8.0 first released to CRAN 
 
 * Jul 2022, E. David Aja at posit::conf [You should use renv](https://www.youtube.com/watch?v=GwVx_pf2uz4)
@@ -18,13 +26,6 @@
 
   + May 2023 lots of documentation updates <https://github.com/rstudio/renv/pull/1236>
   
-* Preceded by {packrat}
-
-  + Sep 2014 {packrat} 0.4.1 released to CRAN
-  
-  + Sep 2023 {packrat} 0.9.2 released (last release)
-  
-  + {packrat} has been soft-deprecated and is now superseded by {renv}.
 
 
 #  What does {renv} DO and NOT DO
@@ -57,6 +58,10 @@ installed.packages() |> as.data.frame() |> View()
 
 * https://rstudio.github.io/renv/articles/package-install.html#cache
 
+* Note: The location of the global cache has changed with different versions 
+of {renv}. This can lead to confusing results/messaging if you are 
+switching between {renv} versions (e.g., seeing that a package is not
+installed but you thought it was.)
 
 
 # Decisions
@@ -209,7 +214,43 @@ _Work in progress, may not be 100% correct_
   + `renv::install()` (default works on all packages specified in lockfile)
 
 
-* `renv::checkout()`??
+* `renv::checkout()` works with Posit Package Manager to install latest available
+packages from a specified date
+
+  + `renv::checkout(date = "2023-08-01")`
+
+  + recommended for use after 2023-07-07 (v1.0.0 of {renv}, 
+  when the checkout function was released)
+  
+  + note this will also take back the version of {renv} to that date as well
+
+# Implicit vs explicit dependencies
+
+* Default mode is implicit
+
+  + `renv::dependencies()` parsed all `.R`, `.Rmd`, `.qmd` and `DESCRIPTION` files for packages used
+
+  + can lead to slow project start up or restart up if many files to scan
+
+* Can change to explicit 
+
+  + <https://rstudio.github.io/renv/articles/faq.html?q=explicit#capturing-explicit-dependencies>
+
+  + `renv::settings$snapshot.type("explicit")`
+
+  + Only considers dependencies captured in `DESCRIPTION` file (no file parsing)
+
+
+# Side note
+
+You can read information from the lock file
+
+```
+lockfile <- renv::lockfile_read("renv.lock")
+names(lockfile$Packages)
+```
+
+# Various botched things
 
 ## Example botched restore attempt
 
@@ -284,30 +325,86 @@ installed.packages() |> as.data.frame() |> View()
 Only updated base or recommended packages...
 because {renv} only updates packages that are already installed.
 
-# Implicit vs explicit dependencies
+## Example botched checkout
 
-* Default mode is implicit
-
-  + `renv::dependencies()` parsed all `.R`, `.Rmd`, `.qmd` and `DESCRIPTION` files for packages used
-
-  + can lead to slow project start up or restart up if many files to scan
-
-* Can change to explicit 
-
-  + <https://rstudio.github.io/renv/articles/faq.html?q=explicit#capturing-explicit-dependencies>
-
-  + `renv::settings$snapshot.type("explicit")`
-
-  + Only considers dependencies captured in `DESCRIPTION` file (no file parsing)
-
-
-# Side note
-
-You can read information from the lock file
+This was on a different repo with a single .R file containing
 
 ```
-lockfile <- renv::lockfile_read("renv.lock")
-names(lockfile$Packages)
+x <- "red"
+
+glue::glue("roses are {x}")
 ```
+
+Attempted to checkout, but older version of installed package does 
+not exist likely because location of cache changed.
+
+```
+> x <- "red"
+> glue::glue("roses are {x}")
+roses are red
+> renv::init()
+- Linking packages into the project library ... Done!
+The following package(s) will be updated in the lockfile:
+
+# CRAN -----------------------------------------------------------------
+- renv   [* -> 1.1.1]
+
+# P3M ------------------------------------------------------------------
+- glue   [* -> 1.8.0]
+
+The version of R recorded in the lockfile will be updated:
+- R      [* -> 4.4.2]
+
+- Lockfile written to "C:/Users/pileggis/Documents/gh-personal/example-glue/renv.lock".
+
+Restarting R session...
+
+- Project 'C:/Users/pileggis/Documents/gh-personal/example-glue' loaded. [renv 1.1.1]
+> renv::checkout(date = "2022-01-01")
+- Querying repositories for available source packages ... Done!
+The following package(s) will be updated:
+
+# Repository -----------------------------------------------------------
+- glue   [repo: https://p3m.dev/cran/latest -> *; ver: 1.8.0 -> 1.6.0]
+- renv   [repo: CRAN -> *; ver: 1.1.1 -> 0.14.0]
+
+Do you want to proceed? [Y/n]: Y
+
+# Downloading packages -------------------------------------------------
+- Querying repositories for available binary packages ... Done!
+- Downloading glue from Repository ...          OK [161.4 Kb in 0.9s]
+- Downloading renv from Repository ...          OK [1.2 Mb in 1.9s]
+Successfully downloaded 2 packages in 5 seconds.
+
+# Installing packages --------------------------------------------------
+- Installing glue ...                           OK [installed binary and cached in 0.33s]
+- Installing renv ...                           OK [installed binary and cached in 0.52s]
+
+The following loaded package(s) have been updated:
+- renv
+Restart your R session to use the new versions.
+
+
+Restarting R session...
+
+* Project 'C:/Users/pileggis/Documents/gh-personal/example-glue' loaded. [renv 0.14.0]
+Warning message:
+renv 0.14.0 was loaded from project library, but this project is configured to use renv ${VERSION}.
+Use `renv::record("renv@0.14.0")` to record renv 0.14.0 in the lockfile.
+Use `renv::restore(packages = "renv")` to install renv ${VERSION} into the project library. 
+* The project library is out of sync with the lockfile.
+* Use `renv::restore()` to install packages recorded in the lockfile.
+> renv::snapshot()
+The following package(s) will be updated in the lockfile:
+
+# P3M ================================
+- glue   [1.8.0 -> *]
+
+Do you want to proceed? [y/N]: N
+* Operation canceled.
+> packageVersion("glue")
+Error in packageVersion("glue") : there is no package called 'glue'
+```
+
 
 
