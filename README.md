@@ -39,13 +39,6 @@ It doesn't. <https://rstats.wtf/personal-radmin#the-project-onion-r>
 
 # We'll probably need to talk about...
 
-## Binaries
-
-* https://r-pkgs.org/structure.html
-
-* https://r-pkgs.org/structure.html#fig-package-files
-
-* https://rstats.wtf/installing-packages
 
 ## Libraries
 
@@ -53,6 +46,30 @@ It doesn't. <https://rstats.wtf/personal-radmin#the-project-onion-r>
 .libPaths()
 installed.packages() |> as.data.frame() |> View()
 ```
+
+## CRAN promises
+
+> The aim is to have CRAN work "at any point in time" 
+
+~ Dirk Eddelbuettel on R Contributors slack, Feb 2025
+
+## Repositories
+
+* https://rstudio.github.io/renv/articles/renv.html?q=reposit#libraries-and-repositories
+
+* https://rstudio.github.io/renv/articles/package-sources.html
+
+* https://posit.co/blog/migrating-from-mran-to-posit-package-manager/
+
+* https://posit.co/blog/announcing-public-package-manager/
+
+## Binaries
+
+* https://r-pkgs.org/structure.html
+
+* https://r-pkgs.org/structure.html#fig-package-files
+
+* https://rstats.wtf/installing-packages
 
 ## Global cache
 
