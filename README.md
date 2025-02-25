@@ -39,6 +39,9 @@ It doesn't. <https://rstats.wtf/personal-radmin#the-project-onion-r>
 
 # We'll probably need to talk about...
 
+## Personal R administration
+
+* [R-Ladies workshop recording](https://www.youtube.com/watch?v=YNTozV6kxSE); [slides](https://rstats-wtf.github.io/wtf-personal-radmin-slides/#/title-slide)
 
 ## Libraries
 
@@ -223,6 +226,8 @@ _Work in progress, may not be 100% correct_
 * Install versions available on CRAN at specified date (respects repo from lockfile unless otherwise specified)
 
   + `renv::restore(repos = c(CRAN = "https://packagemanager.posit.co/cran/2021-11-01"))`
+  
+  + `renv::checkout(date = "2023-08-01")`
 
 * Install latest available package versions
 
