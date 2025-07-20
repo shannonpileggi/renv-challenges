@@ -10,6 +10,12 @@
 
 # Timeline
 
+* Another alternative {checkpoint}
+  
+    + Oct 2014 {checkpoint} 0.3.2 released to CRAN
+      
+    + Jan 2022 {checkpoint} 1.0.1 last release to CRAN
+
 * Preceded by {packrat}
 
   + Sep 2014 {packrat} 0.4.1 released to CRAN
