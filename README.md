@@ -66,6 +66,16 @@ installed.packages() |> as.data.frame() |> View()
 
 * https://posit.co/blog/announcing-public-package-manager/
 
+* MRAN	1/1/2014 - 7/1/2023		
+
+* CRAN	1/1/1997	- today	
+
+* Bioconductor	5/1/2002	- today
+
+* Posit Public Package Manager	6/23/2020	- today
+
+* R-Universe	3/21/2021		- today
+
 ## Binaries
 
 * https://r-pkgs.org/structure.html
